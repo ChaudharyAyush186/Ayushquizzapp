@@ -11,11 +11,10 @@
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
 
-    <!-- Tailwind CSS CDN (if you are using Tailwind classes) -->
+    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="font-sans">
-
     <!-- Start Screen -->
     <div id="start-screen" class="min-h-screen flex flex-col justify-center items-center bg-indigo-100">
         <h1 class="text-3xl font-bold text-indigo-600 mb-6">Welcome to the Quiz</h1>
@@ -26,12 +25,57 @@
 
     <!-- Quiz Screen -->
     <div id="quiz-screen" class="hidden">
-        <!-- Your Quiz Screen Markup Here (as already coded) -->
+        <!-- Timer -->
+        <div class="bg-gray-100 h-2">
+            <div id="timer" class="timer bg-indigo-500 h-full w-full"></div>
+        </div>
+        <!-- Progress Bar -->
+        <div class="bg-gray-100 h-2">
+            <div id="progress-bar" class="progress-bar bg-green-500 h-full w-0"></div>
+        </div>
+        <div class="p-8">
+            <!-- Question Counter -->
+            <div class="flex justify-between items-center mb-6">
+                <span id="question-counter" class="text-sm font-medium text-gray-500">Question 1/5</span>
+                <span id="score-display" class="text-sm font-medium text-gray-500">Score: 0</span>
+            </div>
+            <!-- Question -->
+            <h2 id="question" class="text-xl md:text-2xl font-semibold text-gray-800 mb-6"></h2>
+            <!-- Options -->
+            <div id="options-container" class="space-y-3 mb-8"></div>
+            <!-- Next Button -->
+            <div class="flex justify-center">
+                <button id="next-btn" class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-6 rounded-lg transition-all duration-300">
+                    Submit Answer
+                </button>
+            </div>
+        </div>
     </div>
 
     <!-- Results Screen -->
-    <div id="results-screen" class="hidden">
-        <!-- Your Results Screen Markup Here (as already coded) -->
+    <div id="results-screen" class="hidden p-8 text-center">
+        <h2 class="text-2xl md:text-3xl font-bold text-indigo-600 mb-4">Quiz Completed!</h2>
+        <div class="mb-8">
+            <div class="text-6xl font-bold text-indigo-600 mb-2" id="final-score">0/5</div>
+            <p class="text-gray-600" id="score-message">Better luck next time!</p>
+        </div>
+        <div id="high-score-alert" class="bg-yellow-100 border-l-4 border-yellow-500 p-4 mb-6 hidden">
+            <div class="flex">
+                <div class="flex-shrink-0">
+                    <svg class="h-5 w-5 text-yellow-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd" />
+                    </svg>
+                </div>
+                <div class="ml-3">
+                    <p class="text-sm text-yellow-700">
+                        New high score! Congratulations!
+                    </p>
+                </div>
+            </div>
+        </div>
+        <button id="restart-btn" class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 px-8 rounded-lg transition-all duration-300">
+            Play Again
+        </button>
     </div>
 
     <!-- Link to external JavaScript file -->
