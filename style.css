@@ -1,8 +1,8 @@
 body {
-    font-family: 'Poppins', sans-serif;
-    background: linear-gradient(135deg, #6366f1, #8b5cf6);
-    min-height: 100vh;
+  background: linear-gradient(to bottom right, #6a5acd, #836fff); /* softer gradient */
+  color: #ffffff;
 }
+
 
 .option {
     transition: all 0.3s ease;
