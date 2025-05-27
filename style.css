@@ -52,3 +52,10 @@ body {
 .pulse-animation {
     animation: pulse 1.5s infinite;
 }
+#question-number,
+#score {
+  color: #ffffff;
+  font-weight: bold;
+  font-size: 18px;
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+}
