@@ -4,91 +4,390 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Quiz App</title>
-  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <!-- Quiz UI -->
-  <div id="quiz-screen" class="hidden">
-    <!-- Header -->
-    <div class="bg-indigo-100 p-4">
-      <div class="flex justify-between items-center mb-2">
-        <div class="text-sm font-medium text-indigo-800">Question <span id="current-question">1</span>/<span id="total-questions">5</span></div>
-        <div class="text-sm font-medium text-indigo-800">Score: <span id="score">0</span></div>
-      </div>
-      <div class="w-full bg-gray-200 rounded-full h-2.5">
-        <div id="progress-bar" class="progress-bar bg-indigo-600 h-2.5 rounded-full" style="width: 0%"></div>
-      </div>
+  <style>
+  body {
+        font-family: 'Poppins', sans-serif;
+        background: linear-gradient(135deg, #6366f1, #8b5cf6);
+        min-height: 100vh;
+    }
+    
+    .option {
+        transition: all 0.3s ease;
+    } 
+    
+    .option:hover {
+        transform: translateY(-2px);
+    }
+    
+    .option.selected {
+        border-color: #4f46e5;
+        background-color: #e0e7ff;
+    }
+    
+    .option.correct {
+        border-color: #10b981;
+        background-color: #d1fae5;
+    }
+    
+    .option.incorrect {
+        border-color: #ef4444;
+        background-color: #fee2e2;
+    }
+    
+    .progress-bar {
+        transition: width 0.5s ease;
+    }
+    
+    .quiz-container {
+        max-width: 700px;
+        width: 90%;
+    }
+    
+    .timer {
+        transition: width 1s linear;
+    }
+    
+    @keyframes pulse {
+        0%, 100% {
+            transform: scale(1);
+        }
+        50% {
+            transform: scale(1.05);
+        }
+    }
+    
+    .pulse-animation {
+        animation: pulse 1.5s infinite;
+    }
+</style>
+    <!-- Quiz Screen -->
+    <div id="quiz-screen" class="hidden">
+        <!-- Timer -->
+        <div class="bg-gray-100 h-2">
+            <div id="timer" class="timer bg-indigo-500 h-full w-full"></div>
+        </div>
+        
+        <!-- Progress Bar -->
+        <div class="bg-gray-100 h-2">
+            <div id="progress-bar" class="progress-bar bg-green-500 h-full w-0"></div>
+        </div>
+        
+        <div class="p-8">
+            <!-- Question Counter -->
+            <div class="flex justify-between items-center mb-6">
+                <span id="question-counter" class="text-sm font-medium text-gray-500">Question 1/5</span>
+                <span id="score-display" class="text-sm font-medium text-gray-500">Score: 0</span>
+            </div>
+            
+            <!-- Question -->
+            <h2 id="question" class="text-xl md:text-2xl font-semibold text-gray-800 mb-6"></h2>
+            
+            <!-- Options -->
+            <div id="options-container" class="space-y-3 mb-8">
+                <!-- Options will be inserted here -->
+            </div>
+            
+            <!-- Next Button -->
+            <div class="flex justify-center">
+                <button id="next-btn" class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-6 rounded-lg transition-all duration-300">
+                    Submit Answer
+                </button>
+            </div>
+        </div>
     </div>
 
-    <!-- Timer -->
-    <div class="px-4 pt-4">
-      <div class="flex items-center mb-2">
-        <svg class="h-5 w-5 text-indigo-600 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-        </svg>
-        <span class="text-sm font-medium text-gray-600">Time remaining: <span id="timer">15</span>s</span>
-      </div>
-      <div class="w-full bg-gray-200 rounded-full h-1.5 mb-4">
-        <div id="timer-bar" class="timer-bar bg-indigo-600 h-1.5 rounded-full" style="width: 100%"></div>
-      </div>
-    </div>
-
-    <!-- Question -->
-    <div class="p-6">
-      <h2 id="question" class="text-xl font-semibold text-gray-800 mb-6"></h2>
-      <div id="options" class="space-y-3"></div>
-    </div>
-
-    <!-- Footer -->
-    <div class="bg-gray-50 p-6 flex justify-between items-center">
-      <div id="feedback" class="text-sm font-medium hidden"></div>
-      <button id="next-btn" class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-6 rounded-lg shadow transition-all duration-300 disabled:bg-indigo-300 disabled:cursor-not-allowed">
-        Submit Answer
-      </button>
-    </div>
-  </div>
-
-  <!-- Results -->
-  <div id="results-screen" class="hidden p-8 text-center">
-    <div class="mb-6">
-      <div class="inline-block p-4 rounded-full bg-indigo-100 mb-4">
-        <svg class="h-12 w-12 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-        </svg>
-      </div>
-      <h2 class="text-2xl font-bold text-gray-800 mb-2">Quiz Completed!</h2>
-      <p class="text-gray-600">Your final score:</p>
-      <div class="text-4xl font-bold text-indigo-700 my-4"><span id="final-score">0</span>/<span id="max-score">0</span></div>
-      <p id="score-message" class="text-lg text-gray-700 mb-6"></p>
-    </div>
-    <div class="space-y-3">
-      <button id="play-again-btn" class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 px-8 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 w-full">
-        Play Again
-      </button>
-      <button id="view-answers-btn" class="bg-white border border-indigo-600 text-indigo-600 hover:bg-indigo-50 font-semibold py-3 px-8 rounded-lg transition-all duration-300 w-full">
-        View Answers
-      </button>
-    </div>
-  </div>
-
-  <!-- Review -->
-  <div id="review-screen" class="hidden">
-    <div class="bg-indigo-100 p-4">
-      <div class="flex items-center">
-        <button id="back-to-results-btn" class="mr-2">
-          <svg class="h-5 w-5 text-indigo-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-          </svg>
+    <!-- Results Screen -->
+    <div id="results-screen" class="hidden p-8 text-center">
+        <h2 class="text-2xl md:text-3xl font-bold text-indigo-600 mb-4">Quiz Completed!</h2>
+        <div class="mb-8">
+            <div class="text-6xl font-bold text-indigo-600 mb-2" id="final-score">0/5</div>
+            <p class="text-gray-600" id="score-message">Better luck next time!</p>
+        </div>
+        <div id="high-score-alert" class="bg-yellow-100 border-l-4 border-yellow-500 p-4 mb-6 hidden">
+            <div class="flex">
+                <div class="flex-shrink-0">
+                    <svg class="h-5 w-5 text-yellow-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd" />
+                    </svg>
+                </div>
+                <div class="ml-3">
+                    <p class="text-sm text-yellow-700">
+                        New high score! Congratulations!
+                    </p>
+                </div>
+            </div>
+        </div>
+        <button id="restart-btn" class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 px-8 rounded-lg transition-all duration-300">
+            Play Again
         </button>
-        <h2 class="text-lg font-semibold text-indigo-800">Answer Review</h2>
-      </div>
     </div>
-    <div id="answers-container" class="p-6 space-y-6 max-h-96 overflow-y-auto">
-      <!-- Answers will be inserted -->
-    </div>
-  </div>
+</div>
 
-  <!-- JavaScript -->
-  <script src="script.js"></script>
+<script>
+    // Quiz questions
+    const quizQuestions = [
+        {
+            question: "Which planet is known as the Red Planet?",
+            options: ["Venus", "Mars", "Jupiter", "Saturn"],
+            correctAnswer: "Mars"
+        },
+        {
+            question: "What is the largest ocean on Earth?",
+            options: ["Atlantic Ocean", "Indian Ocean", "Arctic Ocean", "Pacific Ocean"],
+            correctAnswer: "Pacific Ocean"
+        },
+        {
+            question: "Who painted the Mona Lisa?",
+            options: ["Vincent van Gogh", "Pablo Picasso", "Leonardo da Vinci", "Michelangelo"],
+            correctAnswer: "Leonardo da Vinci"
+        },
+        {
+            question: "What is the chemical symbol for gold?",
+            options: ["Go", "Gd", "Au", "Ag"],
+            correctAnswer: "Au"
+        },
+        {
+            question: "Which country is home to the kangaroo?",
+            options: ["New Zealand", "South Africa", "Australia", "Brazil"],
+            correctAnswer: "Australia"
+        }
+    ];
+
+    // DOM elements
+    const startScreen = document.getElementById('start-screen');
+    const quizScreen = document.getElementById('quiz-screen');
+    const resultsScreen = document.getElementById('results-screen');
+    const startBtn = document.getElementById('start-btn');
+    const nextBtn = document.getElementById('next-btn');
+    const restartBtn = document.getElementById('restart-btn');
+    const questionElement = document.getElementById('question');
+    const optionsContainer = document.getElementById('options-container');
+    const questionCounter = document.getElementById('question-counter');
+    const scoreDisplay = document.getElementById('score-display');
+    const finalScore = document.getElementById('final-score');
+    const scoreMessage = document.getElementById('score-message');
+    const progressBar = document.getElementById('progress-bar');
+    const timerElement = document.getElementById('timer');
+    const highScoreAlert = document.getElementById('high-score-alert');
+
+    // Quiz state
+    let currentQuestionIndex = 0;
+    let score = 0;
+    let selectedOption = null;
+    let answeredQuestions = 0;
+    let timerInterval;
+    let timeLeft = 15; // 15 seconds per question
+    let shuffledQuestions = [];
+
+    // Start the quiz
+    startBtn.addEventListener('click', startQuiz);
+    nextBtn.addEventListener('click', handleNextButton);
+    restartBtn.addEventListener('click', restartQuiz);
+
+    // Function to shuffle array
+    function shuffleArray(array) {
+        const newArray = [...array];
+        for (let i = newArray.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
+        }
+        return newArray;
+    }
+
+    function startQuiz() {
+        startScreen.classList.add('hidden');
+        quizScreen.classList.remove('hidden');
+        
+        // Shuffle questions
+        shuffledQuestions = shuffleArray(quizQuestions);
+        
+        currentQuestionIndex = 0;
+        score = 0;
+        answeredQuestions = 0;
+        
+        loadQuestion();
+        updateProgressBar();
+        updateScore();
+    }
+
+    function loadQuestion() {
+        resetState();
+        
+        const currentQuestion = shuffledQuestions[currentQuestionIndex];
+        questionElement.textContent = currentQuestion.question;
+        
+        // Update question counter
+        questionCounter.textContent = `Question ${currentQuestionIndex + 1}/${shuffledQuestions.length}`;
+        
+        // Create option elements
+        currentQuestion.options.forEach(option => {
+            const optionElement = document.createElement('div');
+            optionElement.classList.add(
+                'option', 
+                'border-2', 
+                'border-gray-200', 
+                'p-4', 
+                'rounded-lg', 
+                'cursor-pointer',
+                'hover:bg-gray-50'
+            );
+            optionElement.textContent = option;
+            
+            optionElement.addEventListener('click', () => selectOption(optionElement, option));
+            optionsContainer.appendChild(optionElement);
+        });
+        
+        nextBtn.textContent = 'Submit Answer';
+        nextBtn.disabled = true;
+        nextBtn.classList.add('opacity-50', 'cursor-not-allowed');
+        
+        // Start timer
+        startTimer();
+    }
+
+    function startTimer() {
+        clearInterval(timerInterval);
+        timeLeft = 15;
+        timerElement.style.width = '100%';
+        
+        timerInterval = setInterval(() => {
+            timeLeft--;
+            timerElement.style.width = `${(timeLeft / 15) * 100}%`;
+            
+            if (timeLeft <= 5) {
+                timerElement.classList.remove('bg-indigo-500');
+                timerElement.classList.add('bg-red-500');
+            } else {
+                timerElement.classList.remove('bg-red-500');
+                timerElement.classList.add('bg-indigo-500');
+            }
+            
+            if (timeLeft <= 0) {
+                clearInterval(timerInterval);
+                handleTimeUp();
+            }
+        }, 1000);
+    }
+
+    function handleTimeUp() {
+        const options = document.querySelectorAll('.option');
+        const currentQuestion = shuffledQuestions[currentQuestionIndex];
+        
+        options.forEach(option => {
+            option.classList.remove('selected');
+            
+            if (option.textContent === currentQuestion.correctAnswer) {
+                option.classList.add('correct');
+            }
+            
+            option.classList.add('pointer-events-none');
+        });
+        
+        nextBtn.textContent = currentQuestionIndex < shuffledQuestions.length - 1 ? 'Next Question' : 'See Results';
+        nextBtn.disabled = false;
+        nextBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+        answeredQuestions++;
+    }
+
+    function selectOption(optionElement, selectedAnswer) {
+        clearInterval(timerInterval);
+        
+        const options = document.querySelectorAll('.option');
+        options.forEach(option => {
+            option.classList.remove('selected');
+            option.classList.add('pointer-events-none');
+        });
+        
+        optionElement.classList.add('selected');
+        selectedOption = selectedAnswer;
+        
+        const currentQuestion = shuffledQuestions[currentQuestionIndex];
+        
+        // Check if answer is correct
+        if (selectedAnswer === currentQuestion.correctAnswer) {
+            optionElement.classList.add('correct');
+            score++;
+            updateScore();
+        } else {
+            optionElement.classList.add('incorrect');
+            
+            // Show correct answer
+            options.forEach(option => {
+                if (option.textContent === currentQuestion.correctAnswer) {
+                    option.classList.add('correct');
+                }
+            });
+        }
+        
+        nextBtn.textContent = currentQuestionIndex < shuffledQuestions.length - 1 ? 'Next Question' : 'See Results';
+        nextBtn.disabled = false;
+        nextBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+        answeredQuestions++;
+    }
+
+    function handleNextButton() {
+        clearInterval(timerInterval);
+        
+        if (currentQuestionIndex < shuffledQuestions.length - 1) {
+            currentQuestionIndex++;
+            loadQuestion();
+            updateProgressBar();
+        } else {
+            showResults();
+        }
+    }
+
+    function updateProgressBar() {
+        const progressPercentage = (currentQuestionIndex / shuffledQuestions.length) * 100;
+        progressBar.style.width = `${progressPercentage}%`;
+    }
+
+    function updateScore() {
+        scoreDisplay.textContent = `Score: ${score}`;
+    }
+
+    function resetState() {
+        selectedOption = null;
+        optionsContainer.innerHTML = '';
+        nextBtn.disabled = true;
+        nextBtn.classList.add('opacity-50', 'cursor-not-allowed');
+    }
+
+    function showResults() {
+        quizScreen.classList.add('hidden');
+        resultsScreen.classList.remove('hidden');
+        
+        finalScore.textContent = `${score}/${shuffledQuestions.length}`;
+        
+        // Set message based on score
+        if (score === shuffledQuestions.length) {
+            scoreMessage.textContent = "Perfect score! You're a genius!";
+        } else if (score >= shuffledQuestions.length * 0.8) {
+            scoreMessage.textContent = "Great job! You know your stuff!";
+        } else if (score >= shuffledQuestions.length * 0.6) {
+            scoreMessage.textContent = "Good effort! Keep learning!";
+        } else if (score >= shuffledQuestions.length * 0.4) {
+            scoreMessage.textContent = "Not bad, but you can do better!";
+        } else {
+            scoreMessage.textContent = "Keep practicing to improve your score!";
+        }
+        
+        // Check for high score
+        const highScore = localStorage.getItem('quizHighScore') || 0;
+        if (score > highScore) {
+            localStorage.setItem('quizHighScore', score);
+            highScoreAlert.classList.remove('hidden');
+        } else {
+            highScoreAlert.classList.add('hidden');
+        }
+    }
+
+    function restartQuiz() {
+        resultsScreen.classList.add('hidden');
+        startQuiz();
+    }
+              </script>
 </body>
 </html>
