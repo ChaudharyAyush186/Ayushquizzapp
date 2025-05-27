@@ -1,0 +1,54 @@
+body {
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+    min-height: 100vh;
+}
+
+.option {
+    transition: all 0.3s ease;
+}
+
+.option:hover {
+    transform: translateY(-2px);
+}
+
+.option.selected {
+    border-color: #4f46e5;
+    background-color: #e0e7ff;
+}
+
+.option.correct {
+    border-color: #10b981;
+    background-color: #d1fae5;
+}
+
+.option.incorrect {
+    border-color: #ef4444;
+    background-color: #fee2e2;
+}
+
+.progress-bar {
+    transition: width 0.5s ease;
+}
+
+.quiz-container {
+    max-width: 700px;
+    width: 90%;
+}
+
+.timer {
+    transition: width 1s linear;
+}
+
+@keyframes pulse {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.05);
+    }
+}
+
+.pulse-animation {
+    animation: pulse 1.5s infinite;
+}
