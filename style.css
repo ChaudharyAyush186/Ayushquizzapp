@@ -1,16 +1,35 @@
 body {
-  background-color: #4b4bb7; /* less intense purple */
-  color: #ffffff;
+  background-color: #ffffff; /* White background */
+  color: #000000; /* Default text to black */
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
 }
 
 
 .option {
-    transition: all 0.3s ease;
+  background-color: #f0f0f0; /* Light grey */
+  border: 2px solid #cccccc;
+  color: #000000;
+  padding: 10px;
+  margin: 10px 0;
+  border-radius: 8px;
 }
 
-.option:hover {
-    transform: translateY(-2px);
+button {
+  background-color: #007bff;
+  color: white;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 6px;
+  font-size: 16px;
+  cursor: pointer;
 }
+
+button:hover {
+  background-color: #0056b3;
+}
+
 
 .option.selected {
     border-color: #4f46e5;
@@ -54,9 +73,7 @@ body {
 }
 #question-number,
 #score {
-  color: #ffffff; /* white for high contrast */
+  color: #000000; /* Black text for visibility on white */
   font-weight: bold;
   font-size: 18px;
-  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5); /* adds depth */
 }
-
